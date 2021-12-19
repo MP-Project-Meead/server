@@ -1,7 +1,7 @@
 # server
 
 
-## used library
+## used libraries
 
 - express
 - cors
@@ -130,23 +130,23 @@
 | ----------- | --------------- | -------- | ------------- |
 | category    | String          | required | n/a           |
 | product     | Schema <product>| required | n/a           |
-
  
----
-## UML Diagram
-![UML-BackEnd drawio](https://user-images.githubusercontent.com/92248111/146668984-1aa9256e-4ad0-4586-aacd-c733d7400832.png)
-
----
-
+ ---
+ 
 ## ER Diagram
 ![er-Diagram](https://user-images.githubusercontent.com/92248111/146677128-f358b6e8-11c3-4706-835e-545a0ed639fc.png)
+
+---
+ 
+## UML Diagram
+![UML-BackEnd drawio](https://user-images.githubusercontent.com/92248111/146668984-1aa9256e-4ad0-4586-aacd-c733d7400832.png)
 
 ---
 
 ## wireframes
 
  ![Untitled Diagram](https://user-images.githubusercontent.com/92248111/146689309-44bb2655-49af-4904-a203-610fe3791dae.jpg)
-
+ 
  ----
  
  ![Register](https://user-images.githubusercontent.com/92248111/146686790-78e7921c-403f-439c-8fa6-a6270762e334.jpg)
