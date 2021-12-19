@@ -12,8 +12,8 @@
 
 ## wireframes
 
-![Untitled Diagram](https://user-images.githubusercontent.com/92248111/146686766-f2cd12e4-ea3e-41d6-998f-1c40e5b90712.jpg)
- 
+ ![Untitled Diagram](https://user-images.githubusercontent.com/92248111/146689309-44bb2655-49af-4904-a203-610fe3791dae.jpg)
+
  ----
  
  ![Register](https://user-images.githubusercontent.com/92248111/146686790-78e7921c-403f-439c-8fa6-a6270762e334.jpg)
