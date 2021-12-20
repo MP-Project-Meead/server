@@ -151,10 +151,10 @@
 ----
  
  - Role routes
-  | HTTP Method | URL | Permissions | Request Body | Success status | Error Status | Description |
-  | ----------- | ----- | --------------------------- | ------------------------------- | -------------- | ------------ | --------------------------------------------------------------- |
-  | POST | `/createRole` | Private `Authentication & Authorization` | { role, permissions } | 201 | 400 | create new role |
-  | GET | `/getRole` | Private `Authentication & Authorization`| { name, email, password, role } | 200 | 400 | show all role in the database |
+  | HTTP Method | URL          | Permissions                     | Request Body             | Success status | Error Status | Description.    |
+  | ----------- | ------------ | ------------------------------- | -------------------------| -------------- |--------------| ----------------|
+  | POST        |`/createRole` |`Authentication & Authorization` |{role, permissions}.      | 201            |          400 | create new role |
+  | GET         | `/getRole`   |`Authentication & Authorization` |{name,email,password,role}| 200            |           400| show all role in the database |
 
  --- 
   - product routes
