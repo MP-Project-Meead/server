@@ -215,6 +215,8 @@
  
 ### Git
  
- [Client repository Link](https://github.com/MP-Project-Meead/client)
- [Server repository Link](https://github.com/MP-Project-Meead/server)
+ * [Client repository Link](https://github.com/MP-Project-Meead/client)
+ * [Server repository Link](https://github.com/MP-Project-Meead/server)
+ * [Deployed App Link](http://heroku.com/)
+ * Trello [terllo Link](http://trello.com/)
 
