@@ -143,7 +143,7 @@
 - User routes
   | HTTP Method | URL | Permissions | Request Body | Success status | Error Status | Description |
   | ----------- | ----- | --------------------------- | ------------------------------- | -------------- | ------------ | --------------------------------------------------------------- |
-   | POST | `/users` | Public | n/a | 201 | 401 | create new user |
+  | POST | `/users` | Public | n/a | 201 | 401 | create new user |
   | POST | `/register` | Public | {name , userName , email , password} | 201 | 401 | create new user |
   | post | `/logIn` | Public | { email, password } | 200 | 400, 404 | check if user is exists then return token with user information |
   | POST | `/user/:id` |Public | n/a | 200 | 400 | verifying user account |
@@ -160,8 +160,8 @@
   - product routes
   | HTTP Method | URL | Permissions | Request Body | Success status | Error Status | Description |
   | ----------- | ----- | --------------------------- | ------------------------------- | -------------- | ------------ | --------------------------------------------------------------- |
-  | GET | `/allproducts` | Public | n/a | 200 | 400 | get all courses |
-  | POST | `/createProduct` | Private `Authorization` | { typeOfProduct ,name,image,description,creator,size,price,user,status ,isDeleted,category,startingBid,pool,duration,current winner,status,startingDate,currentBid} | 201 | 400 | create a new Products |
+  | GET                         | `/allproducts` | Public | n/a | 200 | 400 | get all courses |
+  | POST                        | `/createProduct` | Private `Authorization` | { typeOfProduct ,name,image,description,creator,size,price,user,status ,isDeleted,category,startingBid,pool,duration,current winner,status,startingDate,currentBid} | 201 | 400 | create a new Products |
   | GET | `/getOneProduct/:id` | Public | n/a | 200 | 400 | get Products by id |
   | delete | `/deleteProduct/:id` | private`Authorization` | n/a | 200 | 400 | get courses by category |
   | put | `/updateOnProduct` | private`Authorization` | n/a | 200 | 400 | get update on Product |
