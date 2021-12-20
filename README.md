@@ -150,17 +150,21 @@
   
 ----
  
- - Role routes
+ * Role routes
+ 
   | HTTP Method | URL          | Permissions                     | Request Body             | Success status | Error Status | Description.    |
   | ----------- | ------------ | ------------------------------- | -------------------------| -------------- |--------------| ----------------|
   | POST        |`/createRole` |`Authentication & Authorization` |{role, permissions}.      | 201            |          400 | create new role |
   | GET         | `/getRole`   |`Authentication & Authorization` |{name,email,password,role}| 200            |           400| show all role in the database |
 
+ 
  --- 
-  - product routes
+ 
+  * product routes
+ 
   | HTTP Method | URL | Permissions | Request Body | Success status | Error Status | Description |
-  | ----------- | ----- | --------------------------- | ------------------------------- | -------------- | ------------ | --------------------------------------------------------------- |
-  | GET                         | `/allproducts` | Public | n/a | 200 | 400 | get all courses |
+  | ----------- | ----- | --------------------------- | ------------------------------- | -------------- | ------------ | -----------------------------------------
+  | GET         |`/allproducts`| Public | n/a | 200 | 400 | get all courses |
   | POST                        | `/createProduct` | Private `Authorization` | { typeOfProduct ,name,image,description,creator,size,price,user,status ,isDeleted,category,startingBid,pool,duration,current winner,status,startingDate,currentBid} | 201 | 400 | create a new Products |
   | GET | `/getOneProduct/:id` | Public | n/a | 200 | 400 | get Products by id |
   | delete | `/deleteProduct/:id` | private`Authorization` | n/a | 200 | 400 | get courses by category |
