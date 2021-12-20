@@ -177,7 +177,10 @@
   | HTTP Method | URL            | Permissions                 | Request Body | Success status | Error Status | Description          |
   | ----------- | -------------  | --------------------------- | ------------ | -------------- | ------------ | ---------------------| 
   | GET         |`/:commentId`   | Private `Authentication`    | n/a          | 200            | 400          | get comment by id    |
-  | post        |`/createComment`| public `Authentication`.    | n/a          | 200            | 400          | block a course by id |
+  | post        |`/createComment`| public `Authentication`.    | n/a          | 200            | 400          | create comment       |
+ 
+ ---
+ 
  
 ## UML Diagram
 ![UML-BackEnd drawio](https://user-images.githubusercontent.com/92248111/146668984-1aa9256e-4ad0-4586-aacd-c733d7400832.png)
@@ -205,5 +208,13 @@
 ![WishList](https://user-images.githubusercontent.com/92248111/146686827-a064a1b9-1259-485e-8b09-e7a42c83eca9.jpeg)
 
 
-
+----
+ 
+ ## Links
+ 
+ 
+### Git
+ 
+ [Client repository Link](https://github.com/MP-Project-Meead/client)
+ [Server repository Link](https://github.com/MP-Project-Meead/server)
 
