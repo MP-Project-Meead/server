@@ -170,6 +170,14 @@
   | delete | `/deleteProduct/:id` | private`Authorization` | n/a | 200 | 400 | get courses by category |
   | put | `/updateOnProduct` | private`Authorization` | n/a | 200 | 400 | get update on Product |
   
+ ---
+ 
+ * Comments routes
+ 
+  | HTTP Method | URL            | Permissions                 | Request Body | Success status | Error Status | Description          |
+  | ----------- | -------------  | --------------------------- | ------------ | -------------- | ------------ | ---------------------| 
+  | GET         |`/:commentId`   | Private `Authentication`    | n/a          | 200            | 400          | get comment by id    |
+  | post        |`/createComment`| public `Authentication`.    | n/a          | 200            | 400          | block a course by id |
  
 ## UML Diagram
 ![UML-BackEnd drawio](https://user-images.githubusercontent.com/92248111/146668984-1aa9256e-4ad0-4586-aacd-c733d7400832.png)
