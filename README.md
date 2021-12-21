@@ -192,5 +192,5 @@
  * [Client repository Link](https://github.com/MP-Project-Meead/client)
  * [Server repository Link](https://github.com/MP-Project-Meead/server)
  * [Deployed App Link](http://heroku.com/)
- * Trello [terllo Link](https://trello.com/b/gawVOASv/mp-porject)
+ * [terllo Link](https://trello.com/b/gawVOASv/mp-porject)
 
