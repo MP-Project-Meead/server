@@ -134,6 +134,7 @@
  ---
  
 ## ER Diagram
+ 
 ![Untitled Diagram-Page-1](https://user-images.githubusercontent.com/92248111/146737591-3cc19777-d346-4a8b-a5a8-7dfcba2feaeb.jpg)
 
 ---
@@ -187,11 +188,7 @@
 
 ---
  
- ## Links
- 
- 
-### Git
- 
+ ## Links 
  * [Client repository Link](https://github.com/MP-Project-Meead/client)
  * [Server repository Link](https://github.com/MP-Project-Meead/server)
  * [Deployed App Link](http://heroku.com/)
