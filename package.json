@@ -27,6 +27,7 @@
     "mongoose": "^6.1.2",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.15",
+    "nth-check": "^2.0.1",
     "soket.io": "^0.0.1-security"
   }
 }
