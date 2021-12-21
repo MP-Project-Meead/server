@@ -6,9 +6,9 @@ const comment = new mongoose.Schema({
   time: { type: Date, default: Date.now },
   isDel: { type: Boolean, default: false },
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  post: { type: mongoose.Schema.Types.ObjectId, ref: "Post" },
-  
+  product: { type: mongoose.Schema.Types.ObjectId, ref: "product" },
 });
 
 module.exports = mongoose.model("Comment", comment);
+
 /////////////////////////////////////////////////////////////////////////////////\
