@@ -20,8 +20,10 @@ const productSchema = new mongoose.Schema({
   startingDate : { type: Date, default: Date.now },//تاريخ البدء 
   currentBid : { type: Number, required: true}،  // سعر 
 
-  Comment: { type: mongoose.Schema.Types.ObjectId, ref: "Comment" },
+  comment: { type: mongoose.Schema.Types.ObjectId, ref: "Comment" },
   like: { type: mongoose.Schema.Types.ObjectId, ref: "Like" },
+  // order: { [type: mongoose.Schema.Types.ObjectId, ref: "Order"] },
+
 });
 
 module.exports = mongoose.model("Product", post);
