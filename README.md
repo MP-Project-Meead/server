@@ -135,7 +135,9 @@
  
 ## ER Diagram
  
-![Untitled Diagram-Page-1](https://user-images.githubusercontent.com/92248111/146737591-3cc19777-d346-4a8b-a5a8-7dfcba2feaeb.jpg)
+ ![newSchema](https://user-images.githubusercontent.com/92248111/147153464-a8f28986-b1d5-4371-aa22-9ea6aa961003.jpeg)
+
+
 
 ---
  
