@@ -8,38 +8,32 @@ require("dotenv").config();
 const secret = process.env.secretKey;
 
 //////////////////////////////////// signUp //////////////////////////////////////////
-
 const signUp = async (req, res) => {
-
-
   const { name, username, email, password , role } = req.body;
   const saveEmail = email.toLowerCase();
   const saveUsername = username.toLowerCase();
-  const found = await userModel.findOne({ $or: [{ email: saveEmail }, { username: saveUsername }]});
-
-
+  const found = await userModel.findOne({ $or: [{ email: saveEmail }, { username: saveUsername }]}); /// يدخل ايميل او يوزر
  //////////////////////////////////////////
-
-  if (found) {
+  if (found) { // اذا كان اليوزر موجود
     return res.status(204).json("already there");
   }
   if (password.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{6,}$/)) {
-    console.log("okkkk");
     const savePass = await bcrypt.hash(password, SALT);
     const newUser = new userModel({
+      name,
+      username: saveUsername,
       email: saveEmail,
       password: savePass,
-      username: saveUsername,
       role,
     });
-    newUser
+    newUser // نسيّف البيانات اللي دخلناها
       .save()
       .then((result) => {
         // generate token
         const token = jwt.sign({ _userId: result._id }, SECRETKEY, {
           expiresIn: "24h",
         });
-        // Send email (use verified sender's email address & generated API_KEY on SendGrid)
+        /// ارسال بريد تحقق الى الايميل 
         const transporter = nodemailer.createTransport(
           sendgridTransport({
             auth: {
@@ -48,6 +42,7 @@ const signUp = async (req, res) => {
           })
         );
         const mailOptions = {
+          //// الايميل اللي بتوصلني منه رساله
           from: "fationproject@gmail.com",
           to: result.email,
           subject: "Account Verification Link",
@@ -66,16 +61,10 @@ const signUp = async (req, res) => {
         transporter.sendMail(mailOptions, function (err) {
           if (err) {
             return res.status(500).send({
-              msg: "Technical Issue!, Please click on resend for verify your Email.",
+              msg: "Technical Issue!, Please click on resend to verify your Email.",
             });
           }
-          return res
-            .status(200)
-            .send(
-              "A verification email has been sent to " +
-                result.email +
-                ". It will be expire after one day"
-            );
+          return res.status(200).send("A verification email has been sent to " +result.email +". It will be expire after one day");
         });
       })
       .catch((err) => {
@@ -86,8 +75,42 @@ const signUp = async (req, res) => {
   }
 };
 
-//////////////////////////////////// confirmEmail ////////////////////////////////////
+////////////////////////////////////  Log in  //////////////////////////////////////////
+const logIn = (req, res) => {
+  const { emailOrUserName, password } = req.body;
+  newInput = emailOrUserName.toLowerCase();
+  userModel
+    .findOne({ $or: [{ email: newInput }, { username: newInput }] }) // 
+    .then(async (result) => {
+      if (result) {
+        if (result.isDeleted) { /// يشيك اذا اليوزر موجود او محذوف 
+          return res.status(203).json("your account has been deleted");
+        }
+        //// unhash password //// يقارن بين الباسوورد المشفرة بالباسوورد الاصليه ؟ 
+        const savePass = await bcrypt.compare(password, result.password); //compare return boolean
+        if (savePass) {
+          if (!result.isVerified) {
+            return res.status(203).json("Your Email has not been verified");
+          }
+          const payload = {//اخزن الرول و الأيدي في البيلود
+            role: result.role,
+            id: result._id,
+          };
+          const token = await jwt.sign(payload, SECRETKEY); //options // 
+          res.status(200).json({ result, token });
+        } else {
+          res.status(206).json("invalid email or password");
+        }
+      } else {
+        res.status(206).json("invalid email or password");
+      }
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+};
 
+//////////////////////////////////// confirmEmail ////////////////////////////////////
 const confirmEmail = (req, res) => {
   token = req.params.token;
   jwt.verify(token, SECRETKEY, (err, resul) => {
@@ -135,7 +158,6 @@ const confirmEmail = (req, res) => {
 };
 
 //////////////////////////////////// ForgetPassword //////////////////////////////////
-
 const ForgetPassword = (req, res) => {
   const { email } = req.body;
   userModel.findOne({ email }, (err, user) => {
@@ -189,4 +211,48 @@ const ForgetPassword = (req, res) => {
   });
 };
 
-module.exports = { signUp , confirmEmail , ForgetPassword };
+
+//////////////////////////////////// Delete User //////////////////////////////////
+
+const deleteUser = async (req, res) => {
+  const { _id } = req.query;
+  // console.log(_id);
+  userModel
+    .findById({ _id })
+    .then((result) => {
+      if (result) {
+        if (!result.isDeleted) {
+          userModel.updateOne(
+            { _id },
+            { $set: { isDeleted: true } },
+            function (err) {
+              if (err) return handleError(err);
+            }
+          );
+          postsModel.updateMany(
+            { postedBy: _id },
+            { $set: { isDeleted: true } },
+            function (err) {
+              if (err) return handleError(err);
+            }
+          );
+          commentModel.deleteMany({ by: _id }, function (err) {
+            if (err) return handleError(err);
+          });
+          likeModel.deleteMany({ by: _id }, function (err) {
+            if (err) return handleError(err);
+          });
+
+          return res.status(200).json("done");
+        }
+        return res.json("this user already have been deleted");
+      } else {
+        return res.status(404).json("user not found");
+      }
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+};
+
+module.exports = { signUp, logIn, confirmEmail, ForgetPassword, deleteUser };
