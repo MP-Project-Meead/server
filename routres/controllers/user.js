@@ -2,19 +2,25 @@ const userModel = require("./../../db/models/userSchema");
 const productModel = require("./../../db/models/productSchema");
 const comModel = require("./../../db/models/commentSchema");
 const likeModel = require("./../../db/models/likeSchema");
+const nodemailer = require("nodemailer");
+const sendgridTransport = require("nodemailer-sendgrid-transport");
 const bcrypt = require("bcryptjs");
 var jwt = require("jsonwebtoken");
 require("dotenv").config();
-const secret = process.env.secretKey;
+const SECRETKEY = process.env.secretKey;
+const SALT = Number(process.env.SALT);
 
 ////////////////////////////////////{  sign Up  }//////////////////////////////////////////
 const signUp = async (req, res) => {
-  const { name, username, email, password , role } = req.body;
+  const { name, username, email, password, role } = req.body;
   const saveEmail = email.toLowerCase();
   const saveUsername = username.toLowerCase();
-  const found = await userModel.findOne({ $or: [{ email: saveEmail }, { username: saveUsername }]}); /// يدخل ايميل او يوزر
- //////////////////////////////////////////
-  if (found) { // اذا كان اليوزر موجود
+  const found = await userModel.findOne({
+    $or: [{ email: saveEmail }, { username: saveUsername }],
+  }); /// يدخل ايميل او يوزر
+  //////////////////////////////////////////
+  if (found) {
+    // اذا كان اليوزر موجود
     return res.status(204).json("already there");
   }
   if (password.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{6,}$/)) {
@@ -29,11 +35,12 @@ const signUp = async (req, res) => {
     newUser // نسيّف البيانات اللي دخلناها
       .save()
       .then((result) => {
+         console.log(result);
         // generate token
         const token = jwt.sign({ _userId: result._id }, SECRETKEY, {
           expiresIn: "24h",
         });
-        /// ارسال بريد تحقق الى الايميل 
+        /// ارسال بريد تحقق الى الايميل
         const transporter = nodemailer.createTransport(
           sendgridTransport({
             auth: {
@@ -58,13 +65,21 @@ const signUp = async (req, res) => {
             token +
             "\n\nThank You!\n",
         };
+        console.log("here");
+
         transporter.sendMail(mailOptions, function (err) {
           if (err) {
             return res.status(500).send({
               msg: "Technical Issue!, Please click on resend to verify your Email.",
             });
           }
-          return res.status(200).send("A verification email has been sent to " +result.email +". It will be expire after one day");
+          return res
+            .status(200)
+            .send(
+              "A verification email has been sent to " +
+                result.email +
+                ". It will be expire after one day"
+            );
         });
       })
       .catch((err) => {
@@ -80,23 +95,25 @@ const logIn = (req, res) => {
   const { emailOrUserName, password } = req.body;
   newInput = emailOrUserName.toLowerCase();
   userModel
-    .findOne({ $or: [{ email: newInput }, { username: newInput }] }) // 
+    .findOne({ $or: [{ email: newInput }, { username: newInput }] }) //
     .then(async (result) => {
       if (result) {
-        if (result.isDeleted) { /// يشيك اذا اليوزر موجود او محذوف 
+        if (result.isDeleted) {
+          /// يشيك اذا اليوزر موجود او محذوف
           return res.status(203).json("your account has been deleted");
         }
-        //// unhash password //// يقارن بين الباسوورد المشفرة بالباسوورد الاصليه ؟ 
+        //// unhash password //// يقارن بين الباسوورد المشفرة بالباسوورد الاصليه ؟
         const savePass = await bcrypt.compare(password, result.password); //compare return boolean
         if (savePass) {
           if (!result.isVerified) {
             return res.status(203).json("Your Email has not been verified");
           }
-          const payload = {//اخزن الرول و الأيدي في البيلود
+          const payload = {
+            //اخزن الرول و الأيدي في البيلود
             role: result.role,
             id: result._id,
           };
-          const token = await jwt.sign(payload, SECRETKEY); //options // 
+          const token = await jwt.sign(payload, SECRETKEY); //options //
           res.status(200).json({ result, token });
         } else {
           res.status(206).json("invalid email or password");
@@ -116,7 +133,11 @@ const confirmEmail = (req, res) => {
   jwt.verify(token, SECRETKEY, (err, resul) => {
     console.log(resul);
     if (err) {
-      return res.status(400).send("Your verification link may have expired. Please click on resend for verify your Email.");
+      return res
+        .status(400)
+        .send(
+          "Your verification link may have expired. Please click on resend for verify your Email."
+        );
     } else {
       userModel.findOne(
         { _id: resul._userId, email: req.params.email },
@@ -146,7 +167,9 @@ const confirmEmail = (req, res) => {
               else {
                 return res
                   .status(200)
-                  .send(`Your account has been successfully verified <a href="https://socialmedia-website.netlify.app">Back to log in</a>`);
+                  .send(
+                    `Your account has been successfully verified <a href="">Back to log in</a>`
+                  );
               }
             });
           }
@@ -211,14 +234,40 @@ const ForgetPassword = (req, res) => {
   });
 };
 
-////////////////////////////////////{  Delete User  }///////////////////////////////////
-
-const deleteUser = async (req, res) => {
-  const { _id } = req.query;
-  // console.log(_id);
+////////////////////////////////////{  Get All Users  }///////////////////////////////////
+const getAllUsers = async (req, res) => {
   userModel
-    .findById({ _id })
+    .find({ isDeleted: false })
     .then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+};
+
+////////////////////////////////////{  Get One User  }///////////////////////////////////
+const getOneUser = async (req, res) => {
+  const { _id } = req.params;
+  userModel
+    .find({ _id })
+    .then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+}; 
+
+////////////////////////////////////{  Delete User  }///////////////////////////////////
+const deleteUser = async (req, res) => {
+  const { _id } = req.params;
+
+  console.log(_id);
+  userModel
+    .findById( _id )
+    .then((result) => {
+      console.log(result);
       if (result) {
         if (!result.isDeleted) {
           userModel.updateOne(
@@ -254,4 +303,12 @@ const deleteUser = async (req, res) => {
     });
 };
 
-module.exports = { signUp, logIn, confirmEmail, ForgetPassword, deleteUser };
+module.exports = {
+  signUp,
+  logIn,
+  confirmEmail,
+  ForgetPassword,
+  deleteUser,
+  getAllUsers,
+  getOneUser,
+};
