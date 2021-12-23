@@ -1,13 +1,10 @@
 const commentModel = require("../../db/models/commentSchema");
 const roleModel = require("./../../db/models/roleSchema");
 
-
-
 ////////////////////////////////////{  Create Comment  }//////////////////////////////////////////
 
-
 const createComment = (req, res) => {
-  const { description, user, product } = req.body; 
+  const { description, user, product } = req.body;
   const comment = new commentModel({
     description,
     user,
@@ -23,12 +20,32 @@ const createComment = (req, res) => {
     });
 };
 
+////////////////////////////////////{  Comments of The Products  }//////////////////////////////////////////
+
+const getProductComment = (req, res) => {
+  const { onProduct } = req.body;
+  commentModel
+    .find({})
+    .populate("onProduct")
+    .where("onProduct")
+    .equals(onProduct)
+    .exec(function (err, comments) {
+      if (!comments) {
+        return res.status(404).json("Product not found");
+      }
+      if (!comments.length) {
+        return res.json("this Product dosnt have any comments");
+      }
+      if (err) return handleError(err);
+      res.json(comments);
+    });
+};
+
 ////////////////////////////////////{  Delete Comment  }//////////////////////////////////////////
 
-
 const deleteComment = async (req, res) => {
-    //// االيوزر و الادمن يقدرون يحذفون الكومنت 
-  const { _id } = req.params; 
+  //// االيوزر و الادمن يقدرون يحذفون الكومنت
+  const { _id } = req.params;
   const reqUserId = req.token.id; //user
   const userId = req.token.role;
   const Result = await roleModel.findById(userId); //admin -- Result.role =="adimn"
@@ -50,4 +67,10 @@ const deleteComment = async (req, res) => {
   } else {
     return res.status(403).json({ message: "forbidden" });
   }
+};
+
+module.exports = {
+  createComment,
+  getProductComment,
+  deleteComment
 };

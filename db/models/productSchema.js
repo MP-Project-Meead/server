@@ -1,29 +1,29 @@
 const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema({
-
-  name:{ type: String, required: true}, // اسم المنتج
+  name: { type: String, required: true }, // اسم المنتج
   image: { type: String }, // صورة المنتج
-  description: { type: String, default: false }, // وصف المنتج
+  description: { type: String, required: true }, // وصف المنتج
+  creator: { type: String, required: true }, // المصنع
+  size: { type: Number, required: true }, // مقاس المنتج
+  price: { type: Number, required: true }, // سعر المنتج
+  startingBid: { type: Number, required: true }, // السعر المبدئي للمزاد
+  category: { type: String, required: true }, // صنف المنتج
+  status: { type: String, required: true }, // حاله البيع
+  currentWinner: { type: String }, // المالك الحالي
+  currentBid: { type: Number, required: true }, // سعر
+  isDeleted: { type: Boolean, default: false }, //محذوف او لا ؟
+  limited: { type: Boolean, default: false }, // منتج فريد او لا ؟
+
   time: { type: Date, default: Date.now }, // تاريخ إضافة المنتج
-  isDeleted : { type: Boolean, default: false }, //محذوف او لا ؟
-  Limited:{ type: Boolean, default: false },// منتج فريد او لا ؟
-  status: {type : String , required: true },// حاله البيع 
-  creator: { type: String, required: true}, // المصنع
-  size: { type: Number, required: true}, // مقاس المنتج
-  price: { type: Number, required: true},// سعر المنتج
-  category: { type: String, required: true},// صنف المنتج
-  startingBid: { type: Number, required: true}, // السعر المبدئي للمزاد 
-  pool : { type: Number, required: true},
-  duration : { type: Date, default: Date.now }, // مدة المزاد
-  currentWinner : { type: String, required: true},// المالك الحالي
-  startingDate : { type: Date, default: Date.now },//تاريخ البدء 
-  currentBid : { type: Number, required: true}, // سعر 
+  pool: { type: Number, required: true },
+  duration: { type: Date, default: Date.now }, // مدة المزاد
+  startingDate: { type: Date, default: Date.now }, //تاريخ البدء
 
-  comment: { type: mongoose.Schema.Types.ObjectId, ref: "Comment" },
+
   like: { type: mongoose.Schema.Types.ObjectId, ref: "Like" },
+  // comment: { type: mongoose.Schema.Types.ObjectId, ref: "Comment" },
   // order: { [type: mongoose.Schema.Types.ObjectId, ref: "Order"] },
-
 });
 
 module.exports = mongoose.model("Product", productSchema);
