@@ -14,6 +14,16 @@ app.use(morgan("dev"));
 app.use(cors());
 
 
+//////////////// Role Router ////////////////////////////
+
+const roleRouter = require("./routres/routes/role");
+app.use("/role", roleRouter);
+
+//////////////////// User Router /////////////////////////
+
+const userRouter = require("./routres/routes/user");
+app.use("/user", userRouter);
+
 /////////////////////////////////////////////
 
 

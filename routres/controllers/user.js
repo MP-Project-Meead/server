@@ -2,12 +2,12 @@ const userModel = require("./../../db/models/userSchema");
 const productModel = require("./../../db/models/productSchema");
 const comModel = require("./../../db/models/commentSchema");
 const likeModel = require("./../../db/models/likeSchema");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 var jwt = require("jsonwebtoken");
 require("dotenv").config();
 const secret = process.env.secretKey;
 
-//////////////////////////////////// signUp //////////////////////////////////////////
+////////////////////////////////////{  sign Up  }//////////////////////////////////////////
 const signUp = async (req, res) => {
   const { name, username, email, password , role } = req.body;
   const saveEmail = email.toLowerCase();
@@ -75,7 +75,7 @@ const signUp = async (req, res) => {
   }
 };
 
-////////////////////////////////////  Log in  //////////////////////////////////////////
+////////////////////////////////////{  Log in  }//////////////////////////////////////////
 const logIn = (req, res) => {
   const { emailOrUserName, password } = req.body;
   newInput = emailOrUserName.toLowerCase();
@@ -110,7 +110,7 @@ const logIn = (req, res) => {
     });
 };
 
-//////////////////////////////////// confirmEmail ////////////////////////////////////
+////////////////////////////////////{  Confirm Email  }//////////////////////////////////
 const confirmEmail = (req, res) => {
   token = req.params.token;
   jwt.verify(token, SECRETKEY, (err, resul) => {
@@ -157,7 +157,7 @@ const confirmEmail = (req, res) => {
   //  check valid user
 };
 
-//////////////////////////////////// ForgetPassword //////////////////////////////////
+////////////////////////////////////{  Forget Password  }///////////////////////////////
 const ForgetPassword = (req, res) => {
   const { email } = req.body;
   userModel.findOne({ email }, (err, user) => {
@@ -211,8 +211,7 @@ const ForgetPassword = (req, res) => {
   });
 };
 
-
-//////////////////////////////////// Delete User //////////////////////////////////
+////////////////////////////////////{  Delete User  }///////////////////////////////////
 
 const deleteUser = async (req, res) => {
   const { _id } = req.query;

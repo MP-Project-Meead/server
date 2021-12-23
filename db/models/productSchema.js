@@ -8,7 +8,7 @@ const productSchema = new mongoose.Schema({
   time: { type: Date, default: Date.now }, // تاريخ إضافة المنتج
   isDeleted : { type: Boolean, default: false }, //محذوف او لا ؟
   Limited:{ type: Boolean, default: false },// منتج فريد او لا ؟
-  status: {type : String , required: true } // حاله البيع 
+  status: {type : String , required: true },// حاله البيع 
   creator: { type: String, required: true}, // المصنع
   size: { type: Number, required: true}, // مقاس المنتج
   price: { type: Number, required: true},// سعر المنتج
@@ -18,7 +18,7 @@ const productSchema = new mongoose.Schema({
   duration : { type: Date, default: Date.now }, // مدة المزاد
   currentWinner : { type: String, required: true},// المالك الحالي
   startingDate : { type: Date, default: Date.now },//تاريخ البدء 
-  currentBid : { type: Number, required: true}،  // سعر 
+  currentBid : { type: Number, required: true}, // سعر 
 
   comment: { type: mongoose.Schema.Types.ObjectId, ref: "Comment" },
   like: { type: mongoose.Schema.Types.ObjectId, ref: "Like" },
@@ -26,4 +26,4 @@ const productSchema = new mongoose.Schema({
 
 });
 
-module.exports = mongoose.model("Product", post);
+module.exports = mongoose.model("Product", productSchema);

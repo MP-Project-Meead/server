@@ -8,6 +8,8 @@ const {
   deleteUser,
 } = require("./../controllers/user");
 
+////////////////////////////////////////////////////////////////
+
 userRouter.post("/create", signUp);
 userRouter.post("/log", logIn);
 userRouter.delete("/delete", deleteUser);
