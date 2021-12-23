@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   isDeleted: { type: Boolean, default: false },
   isVerified: { type: Boolean, default: false },
-  role: [{ type: mongoose.Schema.Types.ObjectId, ref: "Role" }],
+  role: [{ type: mongoose.Schema.Types.ObjectId, ref: "Role" , default:"61c42c3139940ec8e18224d0" }],
   comment: { type: mongoose.Schema.Types.ObjectId, ref: "Comment" },
   like: { type: mongoose.Schema.Types.ObjectId, ref: "Like" },
 });

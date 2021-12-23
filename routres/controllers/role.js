@@ -1,9 +1,10 @@
-const roleModel = require("./../../db/models/role");
+const roleModel = require("./../../db/models/roleSchema");
 
 ////////////////////////////////// Create Role /////////////////////////////////////////////
 ////  هنا ننشئ تصنيفات اليوزر  إما يكون ادمن او مستخدم عادي و اعطيه الصلاحيات الخاصة فيه
 
 const createRole = (req, res) => {
+  console.log("fffffffff");
   const { role, permissions } = req.body;
   const newRole = new roleModel({
     role,
@@ -18,12 +19,13 @@ const createRole = (req, res) => {
     .catch((err) => {
       res.status(400).json(err);
     });
-}; 
+};
 
 //////////////////////////////// Get the Roles ///////////////////////////////////////////////
 
-
 const roles = (req, res) => {
+  console.log("fffffffff");
+
   roleModel
     .find({})
     .then((result) => {
