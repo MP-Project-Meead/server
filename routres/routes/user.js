@@ -14,10 +14,10 @@ const authorization = require("./../middleWares/authorization");
 
 ////////////////////////////////////////////////////////////////
 
-userRouter.post("/create", signUp);
-userRouter.post("/log", logIn);
-userRouter.delete("/delete/:_id", deleteUser);
-userRouter.get("/users", getAllUsers);
+userRouter.post("/signUp", signUp);
+userRouter.post("/logIn",logIn);
+userRouter.delete("/delete/:_id",authentication, authorization, deleteUser);
+userRouter.get("/allusers", getAllUsers);
 userRouter.get("/users/:id", authentication, getOneUser); // Get user by Id ;
 
 ////////////////////////////////////////////////////////////////

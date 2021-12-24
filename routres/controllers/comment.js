@@ -1,9 +1,9 @@
 const commentModel = require("../../db/models/commentSchema");
 const roleModel = require("./../../db/models/roleSchema");
 
-////////////////////////////////////{  Create Comment  }//////////////////////////////////////////
+////////////////////////////////////{  Create New Comment  }//////////////////////////////////////////
 
-const createComment = (req, res) => {
+const createNewComment = (req, res) => {
   const { description, user, product } = req.body;
   const comment = new commentModel({
     description,
@@ -43,8 +43,8 @@ const getProductComment = (req, res) => {
 
 ////////////////////////////////////{  Delete Comment  }//////////////////////////////////////////
 
-const deleteComment = async (req, res) => {
-  //// االيوزر و الادمن يقدرون يحذفون الكومنت
+const deleteComment = async (req, res) => {//// االيوزر و الادمن يقدرون يحذفون الكومنت
+  
   const { _id } = req.params;
   const reqUserId = req.token.id; //user
   const userId = req.token.role;
@@ -70,7 +70,7 @@ const deleteComment = async (req, res) => {
 };
 
 module.exports = {
-  createComment,
+  createNewComment,
   getProductComment,
-  deleteComment
+  deleteComment,
 };

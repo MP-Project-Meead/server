@@ -1,6 +1,6 @@
 const userModel = require("./../../db/models/userSchema");
 const productModel = require("./../../db/models/productSchema");
-const comModel = require("./../../db/models/commentSchema");
+const commentModel = require("./../../db/models/commentSchema");
 const likeModel = require("./../../db/models/likeSchema");
 const nodemailer = require("nodemailer");
 const sendgridTransport = require("nodemailer-sendgrid-transport");
@@ -260,27 +260,26 @@ const getOneUser = async (req, res) => {
 }; 
 
 ////////////////////////////////////{  Delete User  }///////////////////////////////////
-const deleteUser = async (req, res) => {
+const deleteUser = (req, res) => {
   const { _id } = req.params;
 
   console.log(_id);
+
   userModel
-    .findById( _id )
+    .findById(_id)
     .then((result) => {
+
       console.log(result);
       if (result) {
-        if (!result.isDeleted) {
-          userModel.updateOne(
-            { _id },
-            { $set: { isDeleted: true } },
-            function (err) {
-              if (err) return handleError(err);
-            }
-          );
-          postsModel.updateMany(
-            { postedBy: _id },
-            { $set: { isDeleted: true } },
-            function (err) {
+        // if (!result.isDeleted) {
+          // userModel.updateOne(
+          //   { _id },
+          //   { $set: { isDeleted: true } },
+          //   function (err) {
+          //     if (err) return handleError(err);
+          //   });
+
+          productModel.updateMany({ postedBy: _id },{ $set: { isDeleted: true } },function (err) {
               if (err) return handleError(err);
             }
           );
@@ -292,7 +291,7 @@ const deleteUser = async (req, res) => {
           });
 
           return res.status(200).json("done");
-        }
+        // }
         return res.json("this user already have been deleted");
       } else {
         return res.status(404).json("user not found");

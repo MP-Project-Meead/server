@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const productSchema = new mongoose.Schema({
   name: { type: String, required: true }, // اسم المنتج
   image: { type: String }, // صورة المنتج
-  description: { type: String, required: true }, // وصف المنتج
+  description: { type: String, required: true }, // وصف للمنتج
   creator: { type: String, required: true }, // المصنع
   size: { type: Number, required: true }, // مقاس المنتج
   price: { type: Number, required: true }, // سعر المنتج
