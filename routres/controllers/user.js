@@ -9,8 +9,7 @@ var jwt = require("jsonwebtoken");
 require("dotenv").config();
 const SECRETKEY = process.env.secretKey;
 const SALT = Number(process.env.SALT);
-
-////////////////////////////////////{  sign Up  }//////////////////////////////////////////
+////////////////////////////////////{   sign Up       }//////////////////////////////////////////
 const signUp = async (req, res) => {
   const { name, username, email, password, role } = req.body;
   const saveEmail = email.toLowerCase();
@@ -35,7 +34,7 @@ const signUp = async (req, res) => {
     newUser // نسيّف البيانات اللي دخلناها
       .save()
       .then((result) => {
-         console.log(result);
+        console.log(result);
         // generate token
         const token = jwt.sign({ _userId: result._id }, SECRETKEY, {
           expiresIn: "24h",
@@ -90,7 +89,7 @@ const signUp = async (req, res) => {
   }
 };
 
-////////////////////////////////////{  Log in  }//////////////////////////////////////////
+///////////////////////////////////{   Log in           }//////////////////////////////////////////
 const logIn = (req, res) => {
   const { emailOrUserName, password } = req.body;
   newInput = emailOrUserName.toLowerCase();
@@ -127,7 +126,7 @@ const logIn = (req, res) => {
     });
 };
 
-////////////////////////////////////{  Confirm Email  }//////////////////////////////////
+///////////////////////////////////{   Confirm Email    }//////////////////////////////////
 const confirmEmail = (req, res) => {
   token = req.params.token;
   jwt.verify(token, SECRETKEY, (err, resul) => {
@@ -180,7 +179,7 @@ const confirmEmail = (req, res) => {
   //  check valid user
 };
 
-////////////////////////////////////{  Forget Password  }///////////////////////////////
+///////////////////////////////////{   Forget Password  }///////////////////////////////
 const ForgetPassword = (req, res) => {
   const { email } = req.body;
   userModel.findOne({ email }, (err, user) => {
@@ -234,7 +233,7 @@ const ForgetPassword = (req, res) => {
   });
 };
 
-////////////////////////////////////{  Get All Users  }///////////////////////////////////
+///////////////////////////////////{   Get All Users    }///////////////////////////////////
 const getAllUsers = async (req, res) => {
   userModel
     .find({ isDeleted: false })
@@ -246,7 +245,7 @@ const getAllUsers = async (req, res) => {
     });
 };
 
-////////////////////////////////////{  Get One User  }///////////////////////////////////
+///////////////////////////////////{   Get One User     }///////////////////////////////////
 const getOneUser = async (req, res) => {
   const { _id } = req.params;
   userModel
@@ -257,41 +256,50 @@ const getOneUser = async (req, res) => {
     .catch((err) => {
       res.status(400).json(err);
     });
-}; 
+};
 
-////////////////////////////////////{  Delete User  }///////////////////////////////////
+///////////////////////////////////{   Delete User     }///////////////////////////////////
 const deleteUser = (req, res) => {
   const { _id } = req.params;
-
   console.log(_id);
-
   userModel
-    .findById(_id)
+    .findById({ _id })
     .then((result) => {
-
       console.log(result);
       if (result) {
-        // if (!result.isDeleted) {
-          // userModel.updateOne(
-          //   { _id },
-          //   { $set: { isDeleted: true } },
-          //   function (err) {
-          //     if (err) return handleError(err);
-          //   });
+        if (!result.isDeleted) {
+          userModel.updateOne(
+            { _id },
+            { $set: { isDeleted: true } },
+            function (err) {
+              if (err) return res.status(400).json(err);
+            }
+          );
 
-          productModel.updateMany({ postedBy: _id },{ $set: { isDeleted: true } },function (err) {
+          productModel.updateMany(
+            { by: _id },
+            { $set: { isDeleted: true } },
+            function (err) {
+              if (err) return res.status(400).json(err);
+            }
+          );
+          commentModel.updateMany(
+            { by: _id },
+            { $set: { isDeleted: true } },
+            function (err) {
+              if (err) return res.status(400).json(err);
+            }
+          );
+          likeModel.updateMany(
+            { by: _id },
+            { $set: { isLiked: false } },
+            function (err) {
               if (err) return handleError(err);
             }
           );
-          commentModel.deleteMany({ by: _id }, function (err) {
-            if (err) return handleError(err);
-          });
-          likeModel.deleteMany({ by: _id }, function (err) {
-            if (err) return handleError(err);
-          });
 
           return res.status(200).json("done");
-        // }
+        }
         return res.json("this user already have been deleted");
       } else {
         return res.status(404).json("user not found");

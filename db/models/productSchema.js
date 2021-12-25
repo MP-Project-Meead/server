@@ -20,7 +20,6 @@ const productSchema = new mongoose.Schema({
   duration: { type: Date, default: Date.now }, // مدة المزاد
   startingDate: { type: Date, default: Date.now }, //تاريخ البدء
 
-
   like: { type: mongoose.Schema.Types.ObjectId, ref: "Like" },
   // comment: { type: mongoose.Schema.Types.ObjectId, ref: "Comment" },
   // order: { [type: mongoose.Schema.Types.ObjectId, ref: "Order"] },
