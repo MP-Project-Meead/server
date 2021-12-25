@@ -1,4 +1,4 @@
-const productModel = require("../../db/models/productSchema"); 
+const productModel = require("../../db/models/productSchema");
 const likesModel = require("../../db/models/likeSchema");
 const commentModel = require("../../db/models/commentSchema");
 const roleModel = require("./../../db/models/roleSchema");
@@ -42,7 +42,6 @@ const createProduct = (req, res) => {
     });
 };
 
-
 ////////////////////////////{ Get All Product  }//////////////////////////////////////
 const getAllProduct = (req, res) => {
   productModel
@@ -54,11 +53,9 @@ const getAllProduct = (req, res) => {
     });
 };
 
-
 /////////////////////////{ Delete Product  }//////////////////////////////////////////////
 const deleteProduct = async (req, res) => {
   const { _id } = req.params; //_id: product id
-
 
   productModel.findOne({ _id }).then((result) => {
     if (req.token.role.role === "admin") {
@@ -81,49 +78,6 @@ const deleteProduct = async (req, res) => {
     }
   });
 };
-
-
-// //////////////////////////{ Update Product Describtion  }/////////////////////////////////
-// const updateProduct = (req, res) => {
-
-//   const { _id, newdescribe } = req.body; //_id: post id
-
-//   //get user id by post id
-//   productModel.findById({ _id }).then((result) => {
-//     if (result.postedBy == req.token.id) {
-//       if (result.isDeleted == true) {
-//         return res.json(
-//           "you cant update on this post because its have been archived"
-//         );
-//       } else {
-//         if (!newdescribe.length) {
-//           return res.json("you need to type at least 1 character");
-//         } else {
-//           productModel.updateOne(
-//             { _id },
-//             { $set: { describe: newdescribe } },
-//             function (err) {
-//               if (err) return handleError(err);
-//             }
-//           );
-//           productModel
-//             .find({ _id })
-//             .then((result) => {
-//               res.json(result);
-//             })
-//             .catch((err) => {
-//               res.send(err);
-//             });
-//         }
-//       }
-//     } else {
-//       return res.status(403).json({ message: "forbidden" });
-//     }
-//   });
-// };
-
-
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 

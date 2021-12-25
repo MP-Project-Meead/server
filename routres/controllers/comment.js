@@ -43,8 +43,9 @@ const getProductComment = (req, res) => {
 
 ////////////////////////////////////{  Delete Comment  }//////////////////////////////////////////
 
-const deleteComment = async (req, res) => {//// االيوزر و الادمن يقدرون يحذفون الكومنت
-  
+const deleteComment = async (req, res) => {
+  //// االيوزر و الادمن يقدرون يحذفون الكومنت
+
   const { _id } = req.params;
   const reqUserId = req.token.id; //user
   const userId = req.token.role;
