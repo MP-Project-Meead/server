@@ -12,7 +12,6 @@ const productRouter = express.Router();
 
 productRouter.get("/", authentication, getAllProduct);
 productRouter.post("/create", authentication, authorization, createProduct);
-//owner and admin
 productRouter.delete(
   "/delete/:_id",
   authentication,
