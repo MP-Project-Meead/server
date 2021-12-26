@@ -10,13 +10,8 @@ const {
 
 const productRouter = express.Router();
 
-productRouter.get("/", authentication, getAllProduct);
-productRouter.post("/create", authentication, authorization, createProduct);
-productRouter.delete(
-  "/delete/:_id",
-  authentication,
-  authorization,
-  deleteProduct
-);
+productRouter.post("/create", authentication, authorization, createProduct); // اشتغل
+productRouter.get("/", authentication, getAllProduct); // اشتغل
+productRouter.delete("/delete/:_id", authentication, authorization, deleteProduct); // اشتغل
 
 module.exports = productRouter;

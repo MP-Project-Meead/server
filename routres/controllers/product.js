@@ -6,32 +6,44 @@ const roleModel = require("./../../db/models/roleSchema");
 //////////////////////////{ Create Product  }/////////////////////////////////////////
 const createProduct = (req, res) => {
   const {
+    category,
     name,
     image,
     description,
     creator,
     size,
     price,
+    step,
     startingBid,
-    category,
     status,
-    currentWinner,
+    isDeleted,
+    auction,
+    time,
+    duration,
     currentBid,
+    startingDate,
+    currentWinner,
   } = req.body; // creator: req.token.id ?
+
   const post = new productModel({
+    category,
     name,
     image,
     description,
     creator,
     size,
     price,
+    step,
     startingBid,
-    category,
     status,
-    currentWinner,
+    isDeleted,
+    auction,
+    time,
+    duration,
     currentBid,
+    startingDate,
+    currentWinner,
   });
-
   post
     .save()
     .then((result) => {
@@ -81,8 +93,4 @@ const deleteProduct = async (req, res) => {
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
-module.exports = {
-  createProduct,
-  getAllProduct,
-  deleteProduct,
-};
+module.exports = { createProduct , getAllProduct , deleteProduct };

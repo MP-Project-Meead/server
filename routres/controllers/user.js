@@ -95,7 +95,8 @@ const logIn = (req, res) => {
   const { emailOrUserName, password } = req.body;
   newInput = emailOrUserName.toLowerCase();
   userModel
-    .findOne({ $or: [{ email: newInput }, { username: newInput }] }) //
+    .findOne({ $or: [{ email: newInput }, { username: newInput }] })
+    .populate("role") //
     .then(async (result) => {
       if (result) {
         if (result.isDeleted) {

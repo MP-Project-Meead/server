@@ -10,8 +10,8 @@ const {
 
 const commentRouter = express.Router();
 
-commentRouter.post("/createComment", authentication, createNewComment);
-commentRouter.get("/getAllComments", authentication, getProductComment);
-commentRouter.delete("/deleteComment/:_id", authentication, deleteComment);
+commentRouter.post("/createComment", authentication, createNewComment); // يشتغل
+commentRouter.get("/getAllComments", authentication, getProductComment); // يشتغل
+commentRouter.delete("/deleteComment/:_id", authentication, deleteComment); // يشتغل
 
 module.exports = commentRouter;
