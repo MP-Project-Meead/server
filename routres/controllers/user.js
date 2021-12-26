@@ -9,6 +9,7 @@ var jwt = require("jsonwebtoken");
 require("dotenv").config();
 const SECRETKEY = process.env.secretKey;
 const SALT = Number(process.env.SALT);
+
 ////////////////////////////////////{   sign Up       }//////////////////////////////////////////
 const signUp = async (req, res) => {
   const { name, username, email, password, role } = req.body;
