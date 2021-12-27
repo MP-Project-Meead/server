@@ -4,11 +4,13 @@ const roleModel = require("./../../db/models/roleSchema");
 ////////////////////////////////////{  Create New Comment  }//////////////////////////////////////////
 
 const createNewComment = (req, res) => {
-  const { description, user, product } = req.body;
+
+  const { description, byUser, onProduct } = req.body;
+
   const comment = new commentModel({
     description,
-    user,
-    product,
+    byUser: req.token.id,
+    onProduct,
   });
   comment
     .save()
@@ -50,11 +52,11 @@ const deleteComment = async (req, res) => {
   const reqUserId = req.token.id; //user
   const userId = req.token.role;
   const Result = await roleModel.findById(userId); //admin -- Result.role =="adimn"
-  const Result2 = await commentModel.findById(_id).populate("onPost"); //post owner -- Result2.onPost.postedBy
+  const Result2 = await commentModel.findById(_id).populate("onProduct"); //post owner -- Result2.onProduct.postedBy
   const Result3 = await commentModel.findById(_id); // comment owner
   if (
-    Result.role == "adimn" ||
-    Result2.onPost.postedBy == reqUserId ||
+    Result.role == "admin" ||
+    Result2.onProduct.postedBy == reqUserId ||
     Result3.by == reqUserId
   ) {
     commentModel.deleteOne({ _id }, function (err, result) {
@@ -66,7 +68,7 @@ const deleteComment = async (req, res) => {
       }
     });
   } else {
-    return res.status(403).json({ message: "forbidden" });
+    return res.status(403).json({ message: "forbidden 222" });
   }
 };
 
