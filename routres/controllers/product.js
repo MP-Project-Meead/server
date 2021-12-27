@@ -65,7 +65,33 @@ const getAllProduct = (req, res) => {
     });
 };
 
-/////////////////////////{ Delete Product  }//////////////////////////////////////////////
+
+/////////////////////////////{   Search     }/////////////////////////////////////
+const search = (req, res) => {
+  const { data } = req.body;
+  productModel
+    .find({
+      $or: [
+        { name: new RegExp(data, "i") },
+        { creator: new RegExp(data, "i") },
+      ],
+    })
+    .then((result) => {
+      if (result.length > 0) {
+        res.status(200).send(result);
+      } else {
+        res.status(404).send("Not found");
+      }
+    })
+    .catch((err) => {
+      res.status(400).send(err);
+    });
+};
+
+
+
+
+/////////////////////////{ Delete Product  }///////////////////////////////////////////
 const deleteProduct = async (req, res) => {
   const { _id } = req.params; //_id: product id
 
@@ -93,4 +119,4 @@ const deleteProduct = async (req, res) => {
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
-module.exports = { createProduct , getAllProduct , deleteProduct };
+module.exports = { createProduct, getAllProduct, deleteProduct, search };
