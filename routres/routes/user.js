@@ -5,6 +5,7 @@ const {
   logIn,
   confirmEmail,
   ForgetPassword,
+  resetPassword,
   deleteUser,
   getAllUsers,
   getOneUser,
@@ -24,5 +25,6 @@ userRouter.get("/users/:_id" , authentication, getOneUser); // Get user by Id  /
 
 userRouter.get("/confirmation/:email/:token", confirmEmail);//يشتغل 
 userRouter.put("/forgetPassword", ForgetPassword); // يشتغل 
+userRouter.put("/resetPassword", resetPassword); // ????
 
 module.exports = userRouter;
