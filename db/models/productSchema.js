@@ -17,7 +17,6 @@ const productSchema = new mongoose.Schema({
   time: { type: Date, default: Date.now }, //تاريخ إضافة المنتج
   duration: { type: Date, default: Date.now }, //مدة المزاد
   startingDate: { type: Date, default: Date.now }, //تاريخ البدء
-
   currentWinner: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // المالك الحالي
   // like: { type: mongoose.Schema.Types.ObjectId, ref: "Like" },
 

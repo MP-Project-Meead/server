@@ -65,6 +65,64 @@ const getAllProduct = (req, res) => {
     });
 };
 
+////////////////////////////{ Get One Product }//////////////////////////////////////
+
+const getOneProduct = (req, res) => {
+  const { _id } = req.params;
+  productModel
+    .findById({ _id })
+    // .populate("postedBy")
+    .then((result) => {
+      console.log(result);
+      if (result.isDeleted) {
+        return res.status(201).json("this Product already have been deleted");
+      }
+      finalResult = [];
+      likesModel
+        .find({ onProduct: _id })
+        .populate("onProduct")
+        .populate("byUser")
+        .exec()
+        .then((likesresult) => {
+          commentModel
+            .find({ onProduct: _id })
+            .populate("onProduct")
+            .populate("byUser")
+            .exec()
+            .then((commentresult) => {
+              finalResult.push({
+                _id: result._id,
+                category: result.result,
+                name: result.name,
+                image: result.image,
+                description: result.description,
+                creator: result.creator,
+                size: result.size,
+                price: result.price,
+                time: result.time,
+              });
+              finalResult.push({ likes: likesresult.length });
+              finalResult.push(
+                commentresult.map((elem) => {
+                  console.log(elem);
+                  return {
+                    description: elem.description,
+                    byUser: elem.byUser.username,
+                    _id: elem.byUser._id,
+                    commentId: elem._id,
+                    // img: elem.by.img,
+                  };
+                })
+              );
+
+              res.json(finalResult);
+            });
+        });
+    })
+    .catch((err) => {
+      res.send(err);
+    });
+};
 
 /////////////////////////////{   Search     }/////////////////////////////////////
 const search = (req, res) => {
@@ -119,4 +177,10 @@ const deleteProduct = async (req, res) => {
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
-module.exports = { createProduct, getAllProduct, deleteProduct, search };
+module.exports = {
+  createProduct,
+  getAllProduct,
+  getOneProduct,
+  deleteProduct,
+  search,
+};
