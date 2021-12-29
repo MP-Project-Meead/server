@@ -235,7 +235,6 @@ const ForgetPassword = (req, res) => {
   });
 };
 
-
 ///////////////////////////////////{   Reset Password  }///////////////////////////////
 
 const resetPassword = (req, res) => {
