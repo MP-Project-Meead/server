@@ -1,79 +1,86 @@
-const commentModel = require("../../db/models/commentSchema");
-const roleModel = require("./../../db/models/roleSchema");
+// const commentModel = require("../../db/models/commentSchema");
+// const productModel = require("../../db/models/productSchema");
 
-////////////////////////////////////{  Create New Comment  }//////////////////////////////////////////
+// ////////////////////////////////////{  Create New Comment  }//////////////////////////////////////////
 
-const createNewComment = (req, res) => {
+// const createNewComment = (req, res) => {
+//   const { description, onProduct } = req.body;
 
-  const { description, byUser, onProduct } = req.body;
+//   const comments = new commentModel({
+//     description,
+//     byUser: req.token.id,
+//     onProduct: onProduct,
+//   });
 
-  const comment = new commentModel({
-    description,
-    byUser: req.token.id,
-    onProduct,
-  });
-  comment
-    .save()
-    .then((result) => {
-      res.json(result);
-    })
-    .catch((err) => {
-      res.send(err);
-    });
-};
+//   comments.save().then((result) => {
+//     productModel
+//       .findByIdAndUpdate(onProduct, { $push: { comment: result._id } })
+//       .then((result) => {
+//         res.status(201).json(result);
+//       })
+//       .catch((err) => {
+//         res.status(400).json(err);
+//       });
+//   });
+// };
 
-////////////////////////////////////{  Comments of The Products  }//////////////////////////////////////////
+// ////////////////////////////////////{  Comments of The Products  }//////////////////////////////////////////
 
-const getProductComment = (req, res) => {
-  const { onProduct } = req.body;
-  commentModel
-    .find({})
-    .populate("onProduct")
-    .where("onProduct")
-    .equals(onProduct)
-    .exec(function (err, comments) {
-      if (!comments) {
-        return res.status(404).json("Product not found");
-      }
-      if (!comments.length) {
-        return res.json("this Product dosnt have any comments");
-      }
-      if (err) return handleError(err);
-      res.json(comments);
-    });
-};
+// const getCommentsForProduct = (req, res) => {
+//   const { id } = req.params; // post id
 
-////////////////////////////////////{  Delete Comment  }//////////////////////////////////////////
+//   commentModel
+//     .find({ onProduct: id, deleted: false })
+//     .populate("byUser")
+//     .then((result) => {
+//       res.status(200).json(result);
+//     })
+//     .catch((err) => {
+//       res.status(400).json(err);
+//     });
+// };
 
-const deleteComment = async (req, res) => {
-  //// االيوزر و الادمن يقدرون يحذفون الكومنت
+// ////////////////////////////////////{  Update Comment  }//////////////////////////////////////////
+// const updateComment = (req, res) => {
+//   const { description } = req.body;
+//   const { id } = req.params;
+//   commentModel
+//     .findByIdAndUpdate(
+//       id,
+//       { $set: { description: description } },
+//       { new: true }
+//     )
+//     .then((result) => {
+//       if (result) {
+//         res.status(200).json(result);
+//       } else {
+//         res.status(404).json(err);
+//       }
+//     })
+//     .catch((err) => {
+//       res.status(400).json(err);
+//     });
+// };
 
-  const { _id } = req.params;
-  const reqUserId = req.token.id; //user
-  const userId = req.token.role;
-  const Result = await roleModel.findById(userId); //admin -- Result.role =="adimn"
-  const Result2 = await commentModel.findById(_id).populate("onProduct"); //post owner -- Result2.onProduct.postedBy
-  const Result3 = await commentModel.findById(_id); // comment owner
-  if (
-    Result.role == "admin" ||
-    Result2.onProduct.postedBy == reqUserId ||
-    Result3.by == reqUserId
-  ) {
-    commentModel.deleteOne({ _id }, function (err, result) {
-      if (err) return handleError(err);
-      if (result.deletedCount !== 0) {
-        return res.status(200).json("deleted");
-      } else {
-        return res.status(404).json("not found");
-      }
-    });
-  } else {
-    return res.status(403).json({ message: "forbidden 222" });
-  }
-};
+// ////////////////////////////////////{  Delete Comment  }//////////////////////////////////////////
 
-module.exports = {
-  createNewComment,
-  getProductComment,
-  deleteComment,
-};
+// const deleteComment = (req, res) => {
+//   const { id } = req.params;
+
+//   commentModel
+//     .findByIdAndUpdate(id, { $set: { isDeleted: true } })
+//     .exec()
+//     .then((result) => {
+//       res.status(200).json("Deleted");
+//     })
+//     .catch((err) => {
+//       res.status(400).json(err);
+//     });
+// };
+
+// module.exports = {
+//   createNewComment,
+//   getCommentsForProduct,
+//   updateComment,
+//   deleteComment,
+// };

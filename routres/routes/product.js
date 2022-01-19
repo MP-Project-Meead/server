@@ -5,17 +5,24 @@ const authorization = require("./../middleWares/authorization");
 const {
   createProduct,
   getAllProduct,
+  userCart,
   getOneProduct,
   deleteProduct,
-  search,
+  addToCart,
+  deleteFromCart,
+  // search,
 } = require("./../controllers/product");
 
 const productRouter = express.Router();
-productRouter.post("/create", authentication, authorization, createProduct); // اشتغل
-productRouter.get("/", authentication, getAllProduct); // اشتغل
-postsRouter.get("/oneProduct/:_id", authentication, getOneProduct); 
-
-productRouter.get("/search", search); 
+productRouter.post("/create", createProduct); // اشتغل
+productRouter.get("/", getAllProduct); // اشتغل
+// productRouter.get("/userliked/:likedBy", authentication, getUserLiked);
+productRouter.get("/oneProduct/:_id", getOneProduct); 
+// productRouter.get("/search", search); 
 productRouter.delete("/delete/:_id", authentication, authorization, deleteProduct); // اشتغل
+
+productRouter.get("/userCart", authentication, userCart);
+productRouter.put("/addToCart", authentication, addToCart);
+productRouter.put("/deleteFromCart/:id", authentication, deleteFromCart);
 
 module.exports = productRouter;

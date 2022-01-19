@@ -1,17 +1,19 @@
-const express = require("express");
-const authentication = require("./../middleWares/authentication");
-const {
-  createNewComment,
-  deleteComment,
-  getProductComment,
-} = require("./../controllers/comment");
+// const express = require("express");
+// const authentication = require("./../middleWares/authentication");
+// const {
+//   createNewComment,
+//   getCommentsForProduct,
+//   updateComment,
+//   deleteComment,
+// } = require("./../controllers/comment");
 
-////////////////////////////////////////////////////////////////////////////////////////////
+// ////////////////////////////////////////////////////////////////////////////////////////////
 
-const commentRouter = express.Router();
+// const commentRouter = express.Router();
 
-commentRouter.post("/createComment", authentication, createNewComment); // يشتغل
-commentRouter.get("/getAllComments", authentication, getProductComment); // يشتغل
-commentRouter.delete("/deleteComment/:_id", authentication, deleteComment); // يشتغل
+// commentRouter.post("/createComment", authentication, createNewComment); // يشتغل
+// commentRouter.put("/updateComment/:id", authentication, updateComment);
+// commentRouter.get("/getAllComments/:id", getCommentsForProduct); // يشتغل
+// commentRouter.delete("/deleteComment/:_id", authentication, deleteComment); // يشتغل
 
-module.exports = commentRouter;
+// module.exports = commentRouter;

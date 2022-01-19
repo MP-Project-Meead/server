@@ -1,48 +1,42 @@
 const productModel = require("../../db/models/productSchema");
 const likesModel = require("../../db/models/likeSchema");
 const commentModel = require("../../db/models/commentSchema");
-const roleModel = require("./../../db/models/roleSchema");
+const userModel = require("./../../db/models/userSchema");
 
+const cloudinary = require("cloudinary").v2;
+const { response } = require("express");
+// cloudinary configuration
+cloudinary.config({
+  cloud_name: "daziyd7x1",
+  api_key: process.env.CLOUDINARY_KEY,
+  api_secret: process.env.CLOUDINARY_SECRET,
+});
 //////////////////////////{ Create Product  }/////////////////////////////////////////
-const createProduct = (req, res) => {
+const createProduct = async (req, res) => {
   const {
     category,
     name,
     image,
+    gender,
     description,
     creator,
     size,
     price,
-    step,
-    startingBid,
-    status,
     isDeleted,
-    auction,
     time,
-    duration,
-    currentBid,
-    startingDate,
-    currentWinner,
-  } = req.body; // creator: req.token.id ?
+  } = req.body;
 
   const post = new productModel({
     category,
     name,
-    image,
+    image: image,
+    gender,
     description,
     creator,
     size,
     price,
-    step,
-    startingBid,
-    status,
     isDeleted,
-    auction,
     time,
-    duration,
-    currentBid,
-    startingDate,
-    currentWinner,
   });
   post
     .save()
@@ -50,6 +44,7 @@ const createProduct = (req, res) => {
       res.json(result);
     })
     .catch((err) => {
+      console.log(err);
       res.send(err);
     });
 };
@@ -58,6 +53,7 @@ const createProduct = (req, res) => {
 const getAllProduct = (req, res) => {
   productModel
     .find({ isDeleted: false })
+    .populate("likeBy")
     // .sort({ date: -1 })
     .exec(function (err, posts) {
       if (err) return handleError(err);
@@ -66,88 +62,95 @@ const getAllProduct = (req, res) => {
 };
 
 ////////////////////////////{ Get One Product }//////////////////////////////////////
-
 const getOneProduct = (req, res) => {
   const { _id } = req.params;
   productModel
-    .findById({ _id })
-    // .populate("postedBy")
+    .findById(_id)
+    // .populate("comment")
     .then((result) => {
-      console.log(result);
       if (result.isDeleted) {
         return res.status(201).json("this Product already have been deleted");
       }
-      finalResult = [];
-      likesModel
-        .find({ onProduct: _id })
-        .populate("onProduct")
-        .populate("byUser")
-        .exec()
-        .then((likesresult) => {
-          commentModel
-            .find({ onProduct: _id })
-            .populate("onProduct")
-            .populate("byUser")
-            .exec()
-            .then((commentresult) => {
-              finalResult.push({
-                _id: result._id,
-                category: result.result,
-                name: result.name,
-                image: result.image,
-                description: result.description,
-                creator: result.creator,
-                size: result.size,
-                price: result.price,
-                time: result.time,
-              });
-              finalResult.push({ likes: likesresult.length });
-              finalResult.push(
-                commentresult.map((elem) => {
-                  console.log(elem);
-                  return {
-                    description: elem.description,
-                    byUser: elem.byUser.username,
-                    _id: elem.byUser._id,
-                    commentId: elem._id,
-                    // img: elem.by.img,
-                  };
-                })
-              );
-
-              res.json(finalResult);
-            });
-        });
+      res.status(200).json(result);
     })
     .catch((err) => {
-      res.send(err);
+      console.log(err);
+      res.status(400).json(err);
     });
 };
 
-/////////////////////////////{   Search     }/////////////////////////////////////
-const search = (req, res) => {
-  const { data } = req.body;
+/////////////////////////////{  Search  }/////////////////////////////////////
+// const search = (req, res) => {
+//   const { data } = req.body;
+//   productModel
+//     .find({
+//       $or: [
+//         { name: new RegExp(data, "i") },
+//         { creator: new RegExp(data, "i") },
+//       ],
+//     })
+//     .then((result) => {
+//       if (result.length > 0) {
+//         res.status(200).send(result);
+//       } else {
+//         res.status(404).send("Not found");
+//       }
+//     })
+//     .catch((err) => {
+//       res.status(400).send(err);
+//     });
+// };
+
+////////////////////////////{ to add item to cart }//////////////////////////////////////
+const addToCart = (req, res) => {
+  const { _id } = req.body;
   productModel
-    .find({
-      $or: [
-        { name: new RegExp(data, "i") },
-        { creator: new RegExp(data, "i") },
-      ],
-    })
-    .then((result) => {
-      if (result.length > 0) {
-        res.status(200).send(result);
-      } else {
-        res.status(404).send("Not found");
-      }
+    .findOne({ _id })
+    .then(async (result) => {
+      await userModel.findByIdAndUpdate(req.token.id, {
+        $push: { cart: result },
+      });
+      res.status(200).json(result);
     })
     .catch((err) => {
-      res.status(400).send(err);
+      res.status(400).json(err);
+      console.log(err);
     });
 };
 
+////////////////////////////{ delete item from the cart }//////////////////////////////////////
+const deleteFromCart = (req, res) => {
+  const { id } = req.params;
+  productModel
+    .findOne({ _id: id })
+    .then(async (result) => {
+      await userModel.findByIdAndUpdate(req.token.id, {
+        $pull: { cart: id },
+      });
 
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log("deleteFromCart err", err);
+      res.status(400).json(err);
+    });
+};
+////////////////////////////{ Get User Liked }//////////////////////////////////////
 
+const userCart = (req, res) => {
+  userModel
+    .findOne({ _id: req.token.id })
+    .select("cart")
+    .populate("cart")
+    .then((result) => {
+      // console.log(result);
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+      console.log(err);
+    });
+};
 
 /////////////////////////{ Delete Product  }///////////////////////////////////////////
 const deleteProduct = async (req, res) => {
@@ -181,6 +184,9 @@ module.exports = {
   createProduct,
   getAllProduct,
   getOneProduct,
+  userCart,
   deleteProduct,
-  search,
+  addToCart,
+  deleteFromCart,
+  // search,
 };

@@ -1,7 +1,7 @@
 const userModel = require("./../../db/models/userSchema");
-const productModel = require("./../../db/models/productSchema");
-const commentModel = require("./../../db/models/commentSchema");
-const likeModel = require("./../../db/models/likeSchema");
+// const productModel = require("./../../db/models/productSchema");
+// const commentModel = require("./../../db/models/commentSchema");
+// const likeModel = require("./../../db/models/likeSchema");
 const nodemailer = require("nodemailer");
 const sendgridTransport = require("nodemailer-sendgrid-transport");
 const bcrypt = require("bcryptjs");
@@ -10,7 +10,7 @@ require("dotenv").config();
 const SECRETKEY = process.env.secretKey;
 const SALT = Number(process.env.SALT);
 
-////////////////////////////////////{   sign Up       }//////////////////////////////////////////
+////////////////////////////////////{  sign Up }///////////////////////////////////////
 const signUp = async (req, res) => {
   const { name, username, email, password, role } = req.body;
   const saveEmail = email.toLowerCase();
@@ -90,15 +90,18 @@ const signUp = async (req, res) => {
   }
 };
 
-///////////////////////////////////{   Log in           }//////////////////////////////////////////
+///////////////////////////////////{ Log in  }///////////////////////////////////////
 const logIn = (req, res) => {
   const { emailOrUserName, password } = req.body;
+  console.log(emailOrUserName);
+
   newInput = emailOrUserName.toLowerCase();
   userModel
     .findOne({ $or: [{ email: newInput }, { username: newInput }] })
     .populate("role") //
     .then(async (result) => {
       if (result) {
+      
         if (result.isDeleted) {
           /// يشيك اذا اليوزر موجود او محذوف
           return res.status(203).json("your account has been deleted");
@@ -128,7 +131,7 @@ const logIn = (req, res) => {
     });
 };
 
-///////////////////////////////////{   Confirm Email    }//////////////////////////////////
+///////////////////////////////////{  Confirm Email  }////////////////////////////////
 const confirmEmail = (req, res) => {
   token = req.params.token;
   jwt.verify(token, SECRETKEY, (err, resul) => {
@@ -181,7 +184,7 @@ const confirmEmail = (req, res) => {
   //  check valid user
 };
 
-///////////////////////////////////{   Forget Password  }///////////////////////////////
+///////////////////////////////////{   Forget Password  }////////////////////////////
 const ForgetPassword = (req, res) => {
   const { email } = req.body;
   userModel.findOne({ email }, (err, user) => {
@@ -235,7 +238,7 @@ const ForgetPassword = (req, res) => {
   });
 };
 
-///////////////////////////////////{   Reset Password  }///////////////////////////////
+///////////////////////////////////{   Reset Password  }/////////////////////////////
 
 const resetPassword = (req, res) => {
   const { resetLink, newPassword } = req.body;
@@ -280,10 +283,12 @@ const resetPassword = (req, res) => {
     res.status(201).json("you need to insert a complix password");
   }
 };
-///////////////////////////////////{   Get All Users    }///////////////////////////////////
+///////////////////////////////////{ Get All Users  }////////////////////////////////
 const getAllUsers = async (req, res) => {
   userModel
-    .find({ isDeleted: false })
+    .find({ deleted : false
+    
+    })
     .then((result) => {
       res.status(200).json(result);
     })
@@ -292,7 +297,7 @@ const getAllUsers = async (req, res) => {
     });
 };
 
-///////////////////////////////////{   Get One User     }///////////////////////////////////
+///////////////////////////////////{  Get One User   }////////////////////////////////
 const getOneUser = async (req, res) => {
   const { _id } = req.params;
   userModel
@@ -305,7 +310,7 @@ const getOneUser = async (req, res) => {
     });
 };
 
-///////////////////////////////////{   Delete User     }///////////////////////////////////
+///////////////////////////////////{   Delete User  }////////////////////////////////
 const deleteUser = (req, res) => {
   const { _id } = req.params;
   console.log(_id);
@@ -314,38 +319,14 @@ const deleteUser = (req, res) => {
     .then((result) => {
       console.log(result);
       if (result) {
-        if (!result.isDeleted) {
-          userModel.updateOne(
+        if (!result.deleted) {
+          userModel.findByIdAndUpdate(
             { _id },
-            { $set: { isDeleted: true } },
+            { $set: { deleted: true } },
             function (err) {
               if (err) return res.status(400).json(err);
             }
-          );
-
-          productModel.updateMany(
-            { by: _id },
-            { $set: { isDeleted: true } },
-            function (err) {
-              if (err) return res.status(400).json(err);
-            }
-          );
-          commentModel.updateMany(
-            { by: _id },
-            { $set: { isDeleted: true } },
-            function (err) {
-              if (err) return res.status(400).json(err);
-            }
-          );
-          likeModel.updateMany(
-            { by: _id },
-            { $set: { isLiked: false } },
-            function (err) {
-              if (err) return handleError(err);
-            }
-          );
-
-          return res.status(200).json("done");
+          );return res.status(200).json("done");
         }
         return res.json("this user already have been deleted");
       } else {
@@ -356,7 +337,26 @@ const deleteUser = (req, res) => {
       res.status(400).json(err);
     });
 };
+//////////////////////////{  updateProfile  }///////////////////////////////////////
 
+const updateProfile = (req, res) => {
+  const { _id } = req.params; // user id
+  const { avatar, name } = req.body;
+  userModel
+    .findByIdAndUpdate(
+      { _id }, /// filtres
+      { $set: { avatar, name } },
+      { new: true }
+    )
+    .then((result) => {
+      console.log(result);
+      res.status(200).json(result);
+    })
+
+    .catch((err) => {
+      res.send(err);
+    });
+};
 module.exports = {
   signUp,
   logIn,
@@ -366,4 +366,5 @@ module.exports = {
   deleteUser,
   getAllUsers,
   getOneUser,
+  updateProfile,
 };

@@ -1,50 +1,66 @@
-const likesModel = require("../../db//models/likeSchema");
+const likeModel = require("../../db//models/likeSchema");
+const productModel = require("../../db/models/productSchema");
 
-///////////////////////////////////{   likem Product     }///////////////////////////////////
+///////////////////////////////////{   like Product     }///////////////////////////////////
 
-const likeProduct = (req, res) => {
-  // like toggle
-
-  const { byUser, onProduct } = req.body; // byUser: req.token.id ?
-
-  likesModel.findOne({ byUser, onProduct }).then((result) => {
-    console.log(result);
-    if (result) {
-      likesModel.deleteOne({ byUser, onProduct }, function (err) {
-        if (err) return res.status(400).json(err);
+const addLike = (req, res) => {
+  const { onProduct } = req.body;
+  const newlike = new likeModel({
+    onProduct: onProduct,
+    byUser: req.token.userId,
+  });
+  newlike.save().then((result) => {
+    productModel
+      .findByIdAndUpdate(onProduct, { $push: { like: result._id } })
+      .then((result) => {
+        res.status(201).json(result);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(400).json(err);
       });
-      res.status(200).json("unliked successfully");
-    } else {
-      const like = new likesModel({
-        byUser,
-        onProduct,
-      });
-      like
-        .save()
+  });
+};
+
+///////////////////////////////////{   Remove Like     }///////////////////////////////////
+
+const deleteLike = (req, res) => {
+  const { onProduct } = req.body;
+  likesModel
+    .findOneAndRemove({ onProduct: onProduct })
+    .exec()
+    .then((result) => {
+      productModel
+        .findByIdAndUpdate(onProduct, { $pull: { like: result._id } })
         .then((result) => {
-          res.status(201).json(`liked successfully`);
-        })
-        .catch((err) => {
-          res.send(err);
+          res.status(201).json("deleted");
         });
-    }
-  });
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
 };
 
-///////////////////////////////////{   Check Like     }///////////////////////////////////
+///////////////////////////////////{   get Like     }///////////////////////////////////
 
-const checkLike = (req, res) => {
-  const { onProduct } = req.params; // byUser: req.token.id ?
-  likesModel.find({ byUser: req.token.id , onProduct }).then((result) => {
-    if (result) {
-      res.status(201).json("its liked");
-    } else {
-      res.status(200).json(`its unliked`);
-    }
-  });
+
+const getLiked = (req, res) => {
+  const { byUser } = req.body;
+  likesModel
+    .find({})
+    .populate("onProduct")
+    .then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
 };
+
+///////////////////////////////////////////////////////////////////
 
 module.exports = {
-  likeProduct,
-  checkLike,
+  addLike,
+  deleteLike,
+  getLiked,
 };

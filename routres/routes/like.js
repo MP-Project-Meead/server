@@ -1,11 +1,16 @@
 const express = require("express");
-const { likeProduct, checkLike } = require("./../controllers/like");
+const { getLiked, addLike, deleteLike } = require("./../controllers/like");
 const authentication = require("./../middleWares/authentication");
 
 const likesRouter = express.Router();
 
-likesRouter.put("/", authentication, likeProduct); //يشتغل
-likesRouter.get("/:onProduct", authentication, checkLike); //يشتغل
+
+
+likesRouter.post("/getLiked", authentication, getLiked);
+likesRouter.post("/addLike", authentication, addLike);
+likesRouter.put("/deleteLike", authentication, deleteLike);
+
+
 
 
 module.exports = likesRouter;

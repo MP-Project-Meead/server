@@ -25,12 +25,17 @@ const productRouter = require("./routres/routes/product");
 app.use("/product", productRouter);
 
 //////////////////// Comment Router /////////////////////////
-const commentRouter = require("./routres/routes/comment");
-app.use("/comment", commentRouter);
+// const commentRouter = require("./routres/routes/comment");
+// app.use("/comment", commentRouter);
 
 //////////////////// Comment Router /////////////////////////
 const likesRouter = require("./routres/routes/like");
-app.use("/likes", likesRouter);
+app.use("/like", likesRouter);
+
+
+const paymentRouter = require("./routres/routes/payment");
+app.use(paymentRouter);
+
 
 
 
