@@ -91,6 +91,18 @@ const addToCart = (req, res) => {
   });
 };
 
+const checkCart = (req, res) => {
+  const { _id } = req.params;
+  console.log(_id);
+  userModel.findById(req.token.id).then(async (result) => {
+    console.log(result);
+    if (result.cart.includes(_id)) {
+      return res.status(200).json("this item in your cart");
+    } else {
+      return res.status(204).json("this item isn't in your cart");
+    }
+  });
+};
 ////////////////////////////{ delete item from the cart }//////////////////////////////////////
 const deleteFromCart = (req, res) => {
   const { id } = req.params;
@@ -161,5 +173,6 @@ module.exports = {
   deleteProduct,
   addToCart,
   deleteFromCart,
+  checkCart,
   // search,
 };

@@ -10,6 +10,7 @@ const {
   deleteProduct,
   addToCart,
   deleteFromCart,
+  checkCart,
   // search,
 } = require("./../controllers/product");
 
@@ -20,6 +21,7 @@ productRouter.get("/", getAllProduct);
 productRouter.get("/oneProduct/:_id", getOneProduct); 
 // productRouter.get("/search", search); 
 productRouter.delete("/delete/:_id", authentication, authorization, deleteProduct); // اشتغل
+productRouter.get("/checkCart/:_id", authentication, checkCart);
 
 productRouter.get("/userCart", authentication, userCart);
 productRouter.put("/addToCart", authentication, addToCart);
