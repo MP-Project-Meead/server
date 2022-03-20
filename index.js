@@ -7,7 +7,7 @@ const db = require("./db/db.js");
 /////////////////////////////////////////////
 
 const app = express();
-const PORT = 6000;
+const PORT = 6600;
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(cors());
