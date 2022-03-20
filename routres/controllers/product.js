@@ -71,19 +71,17 @@ const getOneProduct = (req, res) => {
 const addToCart = (req, res) => {
   const { _id } = req.body;
   console.log(_id);
-   userModel.findById(req.token.id).then(async (result) => {
+  userModel.findById(req.token.id).then(async (result) => {
     if (result.cart.includes(_id)) {
-      console.log("item here ");
       res.status(200).json("item already in your cart");
     } else {
-      console.log("item not here ");
       productModel
         .findOne({ _id })
         .then(async (result) => {
           await userModel.findByIdAndUpdate(req.token.id, {
             $push: { cart: result },
           });
-          res.status(200).json(result);
+          res.status(201).json("added successfully");
         })
         .catch((err) => {
           res.status(400).json(err);
@@ -91,19 +89,6 @@ const addToCart = (req, res) => {
         });
     }
   });
-
-  // productModel
-  //   .findOne({ _id })
-  //   .then(async (result) => {
-  //      {
-  //       $push: { cart: result },
-  //     });
-  //     res.status(200).json(result);
-  //   })
-  //   .catch((err) => {
-  //     res.status(400).json(err);
-  //     console.log(err);
-  //   });
 };
 
 ////////////////////////////{ delete item from the cart }//////////////////////////////////////

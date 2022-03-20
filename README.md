@@ -193,6 +193,7 @@
  ## Links 
  * [Client repository Link](https://github.com/MP-Project-Meead/client)
  * [Server repository Link](https://github.com/MP-Project-Meead/server)
- * [Deployed App Link](http://heroku.com/)
+ * [Deployed App Link](https://luxury-project.herokuapp.com
+)
  * [terllo Link](https://trello.com/b/gawVOASv/mp-porject)
 
