@@ -14,8 +14,8 @@ const {
 } = require("./../controllers/product");
 
 const productRouter = express.Router();
-productRouter.post("/create", createProduct); // اشتغل
-productRouter.get("/", getAllProduct); // اشتغل
+productRouter.post("/create", createProduct); 
+productRouter.get("/", getAllProduct); 
 // productRouter.get("/userliked/:likedBy", authentication, getUserLiked);
 productRouter.get("/oneProduct/:_id", getOneProduct); 
 // productRouter.get("/search", search); 

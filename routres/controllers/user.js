@@ -1,7 +1,5 @@
 const userModel = require("./../../db/models/userSchema");
-// const productModel = require("./../../db/models/productSchema");
-// const commentModel = require("./../../db/models/commentSchema");
-// const likeModel = require("./../../db/models/likeSchema");
+
 const nodemailer = require("nodemailer");
 const sendgridTransport = require("nodemailer-sendgrid-transport");
 const bcrypt = require("bcryptjs");

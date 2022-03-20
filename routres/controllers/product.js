@@ -1,16 +1,7 @@
 const productModel = require("../../db/models/productSchema");
-const likesModel = require("../../db/models/likeSchema");
-const commentModel = require("../../db/models/commentSchema");
 const userModel = require("./../../db/models/userSchema");
-
-const cloudinary = require("cloudinary").v2;
 const { response } = require("express");
-// cloudinary configuration
-cloudinary.config({
-  cloud_name: "daziyd7x1",
-  api_key: process.env.CLOUDINARY_KEY,
-  api_secret: process.env.CLOUDINARY_SECRET,
-});
+
 //////////////////////////{ Create Product  }/////////////////////////////////////////
 const createProduct = async (req, res) => {
   const {
@@ -23,7 +14,6 @@ const createProduct = async (req, res) => {
     size,
     price,
     isDeleted,
-    time,
   } = req.body;
 
   const post = new productModel({
@@ -36,7 +26,6 @@ const createProduct = async (req, res) => {
     size,
     price,
     isDeleted,
-    time,
   });
   post
     .save()
@@ -51,14 +40,13 @@ const createProduct = async (req, res) => {
 
 ////////////////////////////{ Get All Product  }//////////////////////////////////////
 const getAllProduct = (req, res) => {
-  productModel
-    .find({ isDeleted: false })
-    .populate("likeBy")
-    // .sort({ date: -1 })
-    .exec(function (err, posts) {
-      if (err) return handleError(err);
-      res.json(posts);
-    });
+  productModel.find({ isDeleted: false }).exec(function (err, posts) {
+    if (err) {
+      console.log(err);
+      res.status(400).json(err);
+    }
+    res.json(posts);
+  });
 };
 
 ////////////////////////////{ Get One Product }//////////////////////////////////////
@@ -79,43 +67,43 @@ const getOneProduct = (req, res) => {
     });
 };
 
-/////////////////////////////{  Search  }/////////////////////////////////////
-// const search = (req, res) => {
-//   const { data } = req.body;
-//   productModel
-//     .find({
-//       $or: [
-//         { name: new RegExp(data, "i") },
-//         { creator: new RegExp(data, "i") },
-//       ],
-//     })
-//     .then((result) => {
-//       if (result.length > 0) {
-//         res.status(200).send(result);
-//       } else {
-//         res.status(404).send("Not found");
-//       }
-//     })
-//     .catch((err) => {
-//       res.status(400).send(err);
-//     });
-// };
-
 ////////////////////////////{ to add item to cart }//////////////////////////////////////
 const addToCart = (req, res) => {
   const { _id } = req.body;
-  productModel
-    .findOne({ _id })
-    .then(async (result) => {
-      await userModel.findByIdAndUpdate(req.token.id, {
-        $push: { cart: result },
-      });
-      res.status(200).json(result);
-    })
-    .catch((err) => {
-      res.status(400).json(err);
-      console.log(err);
-    });
+  console.log(_id);
+   userModel.findById(req.token.id).then(async (result) => {
+    if (result.cart.includes(_id)) {
+      console.log("item here ");
+      res.status(200).json("item already in your cart");
+    } else {
+      console.log("item not here ");
+      productModel
+        .findOne({ _id })
+        .then(async (result) => {
+          await userModel.findByIdAndUpdate(req.token.id, {
+            $push: { cart: result },
+          });
+          res.status(200).json(result);
+        })
+        .catch((err) => {
+          res.status(400).json(err);
+          console.log(err);
+        });
+    }
+  });
+
+  // productModel
+  //   .findOne({ _id })
+  //   .then(async (result) => {
+  //      {
+  //       $push: { cart: result },
+  //     });
+  //     res.status(200).json(result);
+  //   })
+  //   .catch((err) => {
+  //     res.status(400).json(err);
+  //     console.log(err);
+  //   });
 };
 
 ////////////////////////////{ delete item from the cart }//////////////////////////////////////

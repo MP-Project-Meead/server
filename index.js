@@ -7,7 +7,7 @@ const db = require("./db/db.js");
 /////////////////////////////////////////////
 
 const app = express();
-const PORT = process.env.PORT;
+const PORT = 6000;
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(cors());
@@ -23,21 +23,9 @@ app.use("/user", userRouter);
 //////////////////// Product Router /////////////////////////
 const productRouter = require("./routres/routes/product");
 app.use("/product", productRouter);
-
-//////////////////// Comment Router /////////////////////////
-// const commentRouter = require("./routres/routes/comment");
-// app.use("/comment", commentRouter);
-
-//////////////////// Comment Router /////////////////////////
-const likesRouter = require("./routres/routes/like");
-app.use("/like", likesRouter);
-
-
+/////////////////////////////////////////////////////
 const paymentRouter = require("./routres/routes/payment");
 app.use(paymentRouter);
-
-
-
 
 /////////////////////////////////////////////
 app.listen(PORT, () => {
