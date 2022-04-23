@@ -69,11 +69,24 @@ const getOneProduct = (req, res) => {
 
 ////////////////////////////{ to add item to cart }//////////////////////////////////////
 const addToCart = (req, res) => {
+  // console.log(_id + );
+
   const { _id } = req.body;
-  console.log(_id);
   userModel.findById(req.token.id).then(async (result) => {
-    if (result.cart.includes(_id)) {
-      res.status(200).json("item already in your cart");
+    let resu = await result.cart.includes(_id);
+    if (resu) {
+      userModel
+        .findOneAndUpdate(
+          { _id: req.token.id },
+          { $pull: { cart: _id } },
+          { new: true }
+        )
+        .then((result) => {
+          res.status(200).json("removed successfully");
+        })
+        .catch((err) => {
+          res.send(err);
+        });
     } else {
       productModel
         .findOne({ _id })
@@ -93,10 +106,9 @@ const addToCart = (req, res) => {
 
 const checkCart = (req, res) => {
   const { _id } = req.params;
-  console.log(_id);
   userModel.findById(req.token.id).then(async (result) => {
-    console.log(result);
-    if (result.cart.includes(_id)) {
+    let resuu = await result.cart.includes(_id);
+    if (resuu) {
       return res.status(200).json("this item in your cart");
     } else {
       return res.status(204).json("this item isn't in your cart");
