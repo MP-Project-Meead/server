@@ -54,7 +54,6 @@ const getOneProduct = (req, res) => {
   const { _id } = req.params;
   productModel
     .findById(_id)
-    // .populate("comment")
     .then((result) => {
       if (result.isDeleted) {
         return res.status(201).json("this Product already have been deleted");
@@ -157,13 +156,6 @@ const deleteProduct = async (req, res) => {
     if (req.token.role.role === "admin") {
       productModel.deleteOne({ _id }, function (err, result2) {
         if (result2.deletedCount !== 0) {
-          likesModel.deleteMany({ Product: _id }, function (err) {
-            if (err) return handleError(err);
-          });
-          commentModel.deleteMany({ Product: _id }, function (err) {
-            if (err) return handleError(err);
-          });
-
           return res.status(200).json("deleted");
         } else {
           return res.status(404).json("not found");
